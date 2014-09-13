@@ -28,10 +28,10 @@ class PomodoroTimer(object):
 
     def work_completed(self):
         self.session_count += 1
-        print "Completed sessions: {}".format(self.session_count)
+        print "Completed pomodoros: {}".format(self.session_count)
 
     def ticking(self, counter):
-        print "%s: %d" % (self.status, counter)
+        print "{}: {}".format(self.status, counter)
 
     @property
     def is_working(self):

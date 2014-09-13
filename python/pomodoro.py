@@ -18,13 +18,20 @@ class PomodoroTimer(object):
         counter = self._counter()
 
         while counter > 0:
-            print "%s: %d" % (self.status, counter)
+            self.ticking(counter)
             counter -= 1
             time.sleep(1)
 
         if self.is_working:
-            self.session_count += 1
+            self.work_completed()
         self._next_status()
+
+    def work_completed(self):
+        self.session_count += 1
+        print "Completed sessions: {}".format(self.session_count)
+
+    def ticking(self, counter):
+        print "%s: %d" % (self.status, counter)
 
     @property
     def is_working(self):

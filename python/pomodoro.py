@@ -15,23 +15,30 @@ class PomodoroTimer(object):
         self.status = STATUS_WORK
 
     def start(self):
-        if self.status == STATUS_WORK:
-            counter = self.work_duration
-        elif self.status == STATUS_SHORT_REST:
-            counter = self.short_rest
-        elif self.status == STATUS_LONG_REST:
-            counter = self.long_rest
+        counter = self._counter()
 
         while counter > 0:
             print "%s: %d" % (self.status, counter)
             counter -= 1
             time.sleep(1)
 
-        if self.status == STATUS_WORK:
+        if self.is_working:
             self.session_count += 1
-        self.next_status()
+        self._next_status()
 
-    def next_status(self):
+    @property
+    def is_working(self):
+        return self.status == STATUS_WORK
+
+    @property
+    def is_short_rest(self):
+        return self.status == STATUS_SHORT_REST
+
+    @property
+    def is_long_rest(self):
+        return self.status == STATUS_LONG_REST
+
+    def _next_status(self):
         if self.status == STATUS_WORK:
             if self.session_count % 4 == 0:
                 self.status = STATUS_LONG_REST
@@ -39,3 +46,15 @@ class PomodoroTimer(object):
                 self.status = STATUS_SHORT_REST
         else:
             self.status = STATUS_WORK
+
+        return self.status
+
+    def _counter(self):
+        if self.status == STATUS_WORK:
+            counter = self.work_duration
+        elif self.status == STATUS_SHORT_REST:
+            counter = self.short_rest
+        elif self.status == STATUS_LONG_REST:
+            counter = self.long_rest
+
+        return counter

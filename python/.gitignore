@@ -55,3 +55,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# serialized pomodoro objects
+data/*.obj

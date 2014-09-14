@@ -16,11 +16,11 @@ def main():
         f.close()
     except IOError:
         p = PomodoroTimer()
-    finally:
-        p.start()
-        f = open(file_path, 'w')
-        pickle.dump(p, f)
-        f.close()
+
+    p.start()
+    f = open(file_path, 'w')
+    pickle.dump(p, f)
+    f.close()
 
 
 if __name__ == '__main__':

@@ -8,9 +8,11 @@ STATUS_LONG_REST = 'long'
 
 class PomodoroTimer(object):
     def __init__(self, work_duration=4, short_rest=2, long_rest=3):
-        self.work_duration = work_duration
-        self.short_rest = short_rest
-        self.long_rest = long_rest
+        self.durations = {
+            STATUS_WORK: work_duration,
+            STATUS_SHORT_REST: short_rest,
+            STATUS_LONG_REST: long_rest
+        }
         self.session_count = 0
         self.status = STATUS_WORK
 
@@ -57,11 +59,4 @@ class PomodoroTimer(object):
         return self.status
 
     def _counter(self):
-        if self.status == STATUS_WORK:
-            counter = self.work_duration
-        elif self.status == STATUS_SHORT_REST:
-            counter = self.short_rest
-        elif self.status == STATUS_LONG_REST:
-            counter = self.long_rest
-
-        return counter
+        return self.durations[self.status]

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 
-from handlers import StandardOutputHandler
+from handlers import ProgressBarOutputHandler
 
 STATUS_WORK = 'work'
 STATUS_SHORT_REST = 'short'
@@ -10,13 +10,14 @@ STATUS_LONG_REST = 'long'
 
 class PomodoroTimer(object):
     def __init__(self, work_duration=4, short_rest=2, long_rest=3,
-                 output_handler_cls=StandardOutputHandler):
+                 output_handler_cls=ProgressBarOutputHandler):
         self.durations = {
             STATUS_WORK: work_duration,
             STATUS_SHORT_REST: short_rest,
             STATUS_LONG_REST: long_rest
         }
-        self.output_handler = output_handler_cls()
+        self.output_handler = output_handler_cls(STATUS_WORK,
+                                                 duration=work_duration)
         self.session_count = 0
         self.status = STATUS_WORK
 
@@ -28,16 +29,16 @@ class PomodoroTimer(object):
             counter -= 1
             time.sleep(1)
 
-        if self.is_working:
-            self.work_completed()
+        self.timer_completed()
         self._next_status()
 
-    def work_completed(self):
-        self.session_count += 1
-        self.output_handler.work_completed(self.session_count)
+    def timer_completed(self):
+        if self.is_working:
+            self.session_count += 1
+        self.output_handler.completed(self.session_count)
 
     def ticking(self, counter):
-        self.output_handler.ticking(self.status, counter)
+        self.output_handler.ticking(self.status, counter, self._counter())
 
     @property
     def is_working(self):

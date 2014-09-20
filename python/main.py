@@ -1,27 +1,20 @@
 # -*- coding: utf-8 -*-
 
-import pickle
-import os
-from pomodoro import PomodoroTimer
-
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(SCRIPT_DIR, 'data')
+import sys
+from pomodoro import PomodoroTimer, PomodoroTimerNotFound
 
 
-def main():
-    file_path = os.path.join(DATA_DIR, 'pomodoro.obj')
+def main(args):
+    id = args[1] if len(args) > 1 else None
+
     try:
-        f = open(file_path, 'r')
-        p = pickle.load(f)
-        f.close()
-    except IOError:
+        p = PomodoroTimer.loads(id=id)
+    except PomodoroTimerNotFound:
         p = PomodoroTimer()
 
     p.start()
-    f = open(file_path, 'w')
-    pickle.dump(p, f)
-    f.close()
+    p.dumps()
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv)

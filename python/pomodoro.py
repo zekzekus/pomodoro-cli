@@ -22,7 +22,7 @@ class PomodoroTimer(object):
         self.status = STATUS_WORK
 
     def start(self):
-        counter = self._counter()
+        counter = self._counter
 
         while counter > 0:
             self.ticking(counter)
@@ -38,7 +38,7 @@ class PomodoroTimer(object):
         self.output_handler.completed(self.session_count)
 
     def ticking(self, counter):
-        self.output_handler.ticking(self.status, counter, self._counter())
+        self.output_handler.ticking(self.status, counter, self._counter)
 
     @property
     def is_working(self):
@@ -63,5 +63,6 @@ class PomodoroTimer(object):
 
         return self.status
 
+    @property
     def _counter(self):
         return self.durations[self.status]

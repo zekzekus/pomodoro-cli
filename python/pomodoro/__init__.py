@@ -24,7 +24,7 @@ class PomodoroTimer(object):
             STATUS_SHORT_REST: short_rest,
             STATUS_LONG_REST: long_rest
         }
-        self.output_handler = output_handler_cls(STATUS_WORK,
+        self.output_handler = output_handler_cls(self.id, STATUS_WORK,
                                                  duration=work_duration)
         self.backend = backend_cls(self.id)
         self.session_count = 0

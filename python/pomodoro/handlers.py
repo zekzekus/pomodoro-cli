@@ -3,23 +3,27 @@ from progress.bar import Bar
 
 
 class BaseOutputHandler(object):
+    def __init__(self, id):
+        self.id = id
+
     def ticking(self, status, counter, duration=None):
-        raise NotImplemented
+        raise NotImplementedError
 
     def completed(self, count):
-        raise NotImplemented
+        raise NotImplementedError
 
 
 class StandardOutputHandler(BaseOutputHandler):
     def ticking(self, status, counter):
-        print "{}: {}".format(status, counter)
+        print "{}({}): {}".format(status, self.id, counter)
 
     def completed(self, count):
-        print "Completed pomodoros: {}".format(count)
+        print "Completed pomodoros ({}): {}".format(self.id, count)
 
 
 class ProgressBarOutputHandler(BaseOutputHandler):
-    def __init__(self, status, duration):
+    def __init__(self, id, status, duration):
+        super(ProgressBarOutputHandler, self).__init__(id)
         self.bar = Bar(status, max=duration)
         self.finished = False
 
@@ -30,6 +34,6 @@ class ProgressBarOutputHandler(BaseOutputHandler):
         self.bar.next()
 
     def completed(self, count):
-        print "\nCompleted pomodoros: {}".format(count)
+        print "\nCompleted pomodoros ({}): {}".format(self.id, count)
         self.bar.finish()
         self.finished = True

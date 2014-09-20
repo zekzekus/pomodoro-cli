@@ -1,0 +1,3 @@
+
+class PomodoroTimerNotFound(Exception):
+    pass

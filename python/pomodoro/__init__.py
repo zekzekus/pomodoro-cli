@@ -1,31 +1,22 @@
 # -*- coding: utf-8 -*-
-import os
-import pickle
 import time
 
 from hashids import Hashids
 
-from handlers import ProgressBarOutputHandler
-
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(SCRIPT_DIR, 'data')
+from .handlers import ProgressBarOutputHandler
+from .backends import PicklePersistenceBackend
 
 STATUS_WORK = 'work'
 STATUS_SHORT_REST = 'short'
 STATUS_LONG_REST = 'long'
 
-
-class PomodoroTimerNotFound(Exception):
-    pass
-
-
-def get_filename(obj_id):
-    return os.path.join(DATA_DIR, obj_id + '.obj')
+DEFAULT_BACKEND = PicklePersistenceBackend
 
 
 class PomodoroTimer(object):
     def __init__(self, work_duration=4, short_rest=2, long_rest=3,
                  output_handler_cls=ProgressBarOutputHandler,
+                 backend_cls=DEFAULT_BACKEND,
                  id=None):
         self.id = self.__generate_id() if not id else id
         self.durations = {
@@ -35,6 +26,7 @@ class PomodoroTimer(object):
         }
         self.output_handler = output_handler_cls(STATUS_WORK,
                                                  duration=work_duration)
+        self.backend = backend_cls(self.id)
         self.session_count = 0
         self.status = STATUS_WORK
 
@@ -44,10 +36,7 @@ class PomodoroTimer(object):
         return hashids.encrypt(int(time.time()))
 
     def dumps(self):
-        filename = get_filename(self.id)
-        f = open(filename, 'w')
-        pickle.dump(self, f)
-        f.close()
+        self.backend.dumps(self)
 
     def start(self):
         counter = self._counter
@@ -96,15 +85,6 @@ class PomodoroTimer(object):
         return self.durations[self.status]
 
     @classmethod
-    def loads(klass, id):
-        if not id:
-            raise PomodoroTimerNotFound('supply an id to load')
-        try:
-            filename = get_filename(id)
-            f = open(filename, 'r')
-            p = pickle.load(f)
-            f.close()
-            return p
-        except IOError:
-            raise PomodoroTimerNotFound(
-                'Pomodoro timer not found: {}'.format(id))
+    def loads(klass, id, backend_cls=DEFAULT_BACKEND):
+        backend = backend_cls(id)
+        return backend.loads()

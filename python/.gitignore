@@ -57,4 +57,4 @@ docs/_build/
 target/
 
 # serialized pomodoro objects
-data/*.obj
+pomodoro/data/*.obj

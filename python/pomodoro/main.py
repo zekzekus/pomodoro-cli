@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-
-from pomodoro import PomodoroTimer
-from pomodoro.exceptions import PomodoroTimerNotFound
+from pomodoro import PomodoroTimer, PomodoroTimerNotFound
 
 
 def main(args):

@@ -13,6 +13,8 @@ def main(args):
         p = PomodoroTimer.loads(id=id)
     except PomodoroTimerNotFound:
         p = PomodoroTimer()
+        print "timer not found with id: {}. new timer created with id: {}".\
+            format(id, p.id)
 
     p.start()
     p.dumps()

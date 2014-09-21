@@ -9,7 +9,7 @@ class BasePersistenceBackend(object):
         self.id = id
         self.filename = get_filename(id) if self.id is not None else None
 
-    def loads(self, id):
+    def loads(self):
         raise NotImplementedError
 
     def dumps(self, pomodoro_obj):

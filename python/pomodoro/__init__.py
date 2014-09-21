@@ -11,6 +11,8 @@ STATUS_SHORT_REST = 'short'
 STATUS_LONG_REST = 'long'
 
 DEFAULT_BACKEND = PicklePersistenceBackend
+ID_SALT = 'T*{VghkFo}2lcknb~Np$s8+$^|n~>59~#,+D9Z3Eaq/n+'
+ID_ALPHABET = '1234567890ABCDEF'
 
 
 class PomodoroTimer(object):
@@ -31,12 +33,8 @@ class PomodoroTimer(object):
         self.status = STATUS_WORK
 
     def __generate_id(self):
-        hashids = Hashids(salt='T*{VghkFo}2lcknb~Np$s8+$^|n~>59~#,+D9Z3Eaq/n+',
-                          alphabet='1234567890ABCDEF', min_length=6)
+        hashids = Hashids(salt=ID_SALT, alphabet=ID_ALPHABET, min_length=6)
         return hashids.encrypt(int(time.time()))
-
-    def dumps(self):
-        self.backend.dumps(self)
 
     def start(self):
         counter = self._counter
@@ -83,6 +81,9 @@ class PomodoroTimer(object):
     @property
     def _counter(self):
         return self.durations[self.status]
+
+    def dumps(self):
+        self.backend.dumps(self)
 
     @classmethod
     def loads(klass, id, backend_cls=DEFAULT_BACKEND):

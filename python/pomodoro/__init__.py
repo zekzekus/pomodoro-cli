@@ -68,7 +68,7 @@ class PomodoroTimer(object):
         return self.status == STATUS_LONG_REST
 
     def _next_status(self):
-        if self.status == STATUS_WORK:
+        if self.is_working:
             if self.session_count % 4 == 0:
                 self.status = STATUS_LONG_REST
             else:

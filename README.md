@@ -15,10 +15,11 @@ with.
 ## targeted programming languages
 
 - python
+- clojure
+- haskell
 - erlang
+- elixir
 - javascript (node.js)
 - go
-- haskell
 - common lisp
-- elixir
 - smalltalk

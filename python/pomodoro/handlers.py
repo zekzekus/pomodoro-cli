@@ -3,7 +3,7 @@ from progress.bar import Bar
 
 
 class BaseOutputHandler(object):
-    def __init__(self, id):
+    def __init__(self, id, status, duration):
         self.id = id
 
     def ticking(self, status, counter, duration=None):
@@ -14,7 +14,7 @@ class BaseOutputHandler(object):
 
 
 class StandardOutputHandler(BaseOutputHandler):
-    def ticking(self, status, counter):
+    def ticking(self, status, counter, duration):
         print "{}({}): {}".format(status, self.id, counter)
 
     def completed(self, count):

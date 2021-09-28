@@ -18,7 +18,7 @@ class BasePersistenceBackend(object):
 
 class PicklePersistenceBackend(BasePersistenceBackend):
     def dumps(self, pomodoro_obj):
-        f = open(self.filename, 'w')
+        f = open(self.filename, 'wb')
         pickle.dump(pomodoro_obj, f)
         f.close()
 
@@ -26,7 +26,7 @@ class PicklePersistenceBackend(BasePersistenceBackend):
         if not self.id:
             raise PomodoroTimerNotFound('supply an id to load')
         try:
-            f = open(self.filename, 'r')
+            f = open(self.filename, 'rb')
             p = pickle.load(f)
             f.close()
             return p

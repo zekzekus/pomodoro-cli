@@ -15,15 +15,15 @@ class BaseOutputHandler(object):
 
 class StandardOutputHandler(BaseOutputHandler):
     def ticking(self, status, counter, duration):
-        print "{}({}): {}".format(status, self.id, counter)
+        print(f"{status}({self.id}): {counter}")
 
     def completed(self, count):
-        print "Completed pomodoros ({}): {}".format(self.id, count)
+        print(f"Completed pomodoros ({self.id}): {count}")
 
 
 class ProgressBarOutputHandler(BaseOutputHandler):
     def __init__(self, id, status, duration):
-        super(ProgressBarOutputHandler, self).__init__(id)
+        super(ProgressBarOutputHandler, self).__init__(id, status, duration)
         self.bar = Bar(status, max=duration)
         self.finished = False
 
@@ -34,6 +34,6 @@ class ProgressBarOutputHandler(BaseOutputHandler):
         self.bar.next()
 
     def completed(self, count):
-        print "\nCompleted pomodoros ({}): {}".format(self.id, count)
+        print(f"\nCompleted pomodoros ({self.id}): {count}")
         self.bar.finish()
         self.finished = True

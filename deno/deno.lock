@@ -1,10 +1,14 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@ryweal/progress@^1.0.1": "1.0.1",
     "jsr:@std/assert@1": "1.0.12",
     "jsr:@std/internal@^1.0.6": "1.0.6"
   },
   "jsr": {
+    "@ryweal/progress@1.0.1": {
+      "integrity": "7aeaaa9aab5c9d3ad348942dcb23616a062b08afa19b0a5f100937ecd0bab613"
+    },
     "@std/assert@1.0.12": {
       "integrity": "08009f0926dda9cbd8bef3a35d3b6a4b964b0ab5c3e140a4e0351fbf34af5b9a",
       "dependencies": [
@@ -26,6 +30,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@ryweal/progress@^1.0.1",
       "jsr:@std/assert@1"
     ]
   }

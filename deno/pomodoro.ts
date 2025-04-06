@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "https://deno.land/std@0.95.0/uuid/mod.ts";
+import { progress } from "@ryweal/progress";
 
 type PomodoroSession = {
   id: string;
@@ -26,10 +27,10 @@ async function saveSessions(sessions: Record<string, PomodoroSession>) {
   await Deno.writeTextFile(SESSIONS_FILE, JSON.stringify(sessions));
 }
 
-async function handleProgress(duration: number) {
+async function handleProgress(duration: number, p: any) {
   await new Promise<void>((resolve) => {
     const interval = setInterval(() => {
-      console.log(`Tick: ${duration}`);
+      p.next();
       duration--;
       if (duration <= 0) {
         clearInterval(interval);
@@ -51,8 +52,9 @@ export async function startPomodoro(id?: string) {
 
   console.log(`Session ID: ${id}`);
   console.log(`Starting ${session.isWorkSession ? "work" : "break"} session for ${duration} seconds...`);
+  const p = progress("Progress: [[bar]]", { total: duration});
 
-  handleProgress(duration);
+  handleProgress(duration, p);
 
   if (session.isWorkSession) {
     session.workSessions++;

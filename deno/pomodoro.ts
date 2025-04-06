@@ -10,6 +10,7 @@ const SESSIONS_FILE = "./sessions.json";
 const WORK_DURATION: number = 4;
 const SHORT_REST_DURATION: number = 2;
 const _LONG_REST_DURAITON: number = 3;
+const BASE_TIME: number = 1000; // seconds
 
 async function loadSessions():
   Promise<Record<string, PomodoroSession>> {
@@ -25,6 +26,19 @@ async function saveSessions(sessions: Record<string, PomodoroSession>) {
   await Deno.writeTextFile(SESSIONS_FILE, JSON.stringify(sessions));
 }
 
+async function handleProgress(duration: number) {
+  await new Promise<void>((resolve) => {
+    const interval = setInterval(() => {
+      console.log(`Tick: ${duration}`);
+      duration--;
+      if (duration <= 0) {
+        clearInterval(interval);
+        resolve();
+      }
+    }, BASE_TIME);
+  });
+}
+
 export async function startPomodoro(id?: string) {
   const sessions = await loadSessions();
   if (!id || !sessions[id]) {
@@ -38,7 +52,7 @@ export async function startPomodoro(id?: string) {
   console.log(`Session ID: ${id}`);
   console.log(`Starting ${session.isWorkSession ? "work" : "break"} session for ${duration} seconds...`);
 
-  await new Promise((resolve) => setTimeout(resolve, duration * 1000));
+  handleProgress(duration);
 
   if (session.isWorkSession) {
     session.workSessions++;

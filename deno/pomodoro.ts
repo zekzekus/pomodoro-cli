@@ -27,7 +27,8 @@ async function saveSessions(sessions: Record<string, PomodoroSession>) {
   await Deno.writeTextFile(SESSIONS_FILE, JSON.stringify(sessions));
 }
 
-async function handleProgress(duration: number, p: any) {
+// deno-lint-ignore no-explicit-any
+async function handleProgress(duration: number, p: any): Promise<void> {
   await new Promise<void>((resolve) => {
     const interval = setInterval(() => {
       p.next();

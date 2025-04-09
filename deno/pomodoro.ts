@@ -15,7 +15,7 @@ const BASE_TIME: number = 1000; // seconds
 
 /**
  * Loads the Pomodoro sessions from the sessions file.
- * 
+ *
  * @returns A promise that resolves to a record of Pomodoro sessions, where each session is identified by a unique string ID.
  * If the sessions file cannot be read or parsed, it returns an empty record.
  */
@@ -29,10 +29,26 @@ async function loadSessions():
   }
 }
 
+/**
+ * Saves the Pomodoro sessions to the sessions file.
+ *
+ * @param sessions - A record of Pomodoro sessions, where each session is identified by a unique string ID.
+ *
+ * @returns A promise that resolves when the sessions have been successfully written to the file.
+ * If the file cannot be written, the promise will be rejected with an error.
+ */
 async function saveSessions(sessions: Record<string, PomodoroSession>) {
   await Deno.writeTextFile(SESSIONS_FILE, JSON.stringify(sessions));
 }
 
+/**
+ * Handles the progress of a session by updating the progress bar at regular intervals.
+ *
+ * @param duration - The duration for which the progress should be tracked, in seconds.
+ * @param p - The progress bar instance to be updated.
+ *
+ * @returns A promise that resolves when the duration has elapsed.
+ */
 // deno-lint-ignore no-explicit-any
 async function handleProgress(duration: number, p: any): Promise<void> {
   await new Promise<void>((resolve) => {

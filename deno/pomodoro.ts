@@ -10,9 +10,15 @@ type PomodoroSession = {
 const SESSIONS_FILE = "./sessions.json";
 const WORK_DURATION: number = 4;
 const SHORT_REST_DURATION: number = 2;
-const _LONG_REST_DURAITON: number = 3;
+const LONG_REST_DURAITON: number = 3;
 const BASE_TIME: number = 1000; // seconds
 
+/**
+ * Loads the Pomodoro sessions from the sessions file.
+ * 
+ * @returns A promise that resolves to a record of Pomodoro sessions, where each session is identified by a unique string ID.
+ * If the sessions file cannot be read or parsed, it returns an empty record.
+ */
 async function loadSessions():
   Promise<Record<string, PomodoroSession>> {
   try {
@@ -49,7 +55,9 @@ export async function startPomodoro(id?: string) {
   }
 
   const session = sessions[id];
-  const duration = session.isWorkSession ? WORK_DURATION : SHORT_REST_DURATION;
+  const duration = session.isWorkSession
+    ? WORK_DURATION
+    : (session.workSessions % 4 === 0 ? LONG_REST_DURAITON : SHORT_REST_DURATION);
 
   console.log(`Session ID: ${id}`);
   console.log(`Starting ${session.isWorkSession ? "work" : "break"} session for ${duration} seconds...`);

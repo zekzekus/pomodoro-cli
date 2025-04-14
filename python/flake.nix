@@ -1,45 +1,29 @@
 {
-  description = "Example Python development environment for Zero to Nix";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  inputs.poetry2nix.url = "github:nix-community/poetry2nix";
 
-  # Flake inputs
-  inputs = {
-    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.2405.*.tar.gz";
-  };
-
-  # Flake outputs
-  outputs = { self, nixpkgs }:
+  outputs = { self, nixpkgs, poetry2nix }:
     let
-      # Systems supported
-      allSystems = [
-        "x86_64-linux" # 64-bit Intel/AMD Linux
-        "aarch64-linux" # 64-bit ARM Linux
-        "x86_64-darwin" # 64-bit Intel macOS
-        "aarch64-darwin" # 64-bit ARM macOS
-      ];
-
-      # Helper to provide system-specific attributes
-      forAllSystems = f: nixpkgs.lib.genAttrs allSystems (system: f {
-        pkgs = import nixpkgs { inherit system; };
-      });
+      supportedSystems = [ "aarch64-darwin" ];
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      pkgs = forAllSystems (system: nixpkgs.legacyPackages.${system});
     in
     {
-      # Development environment output
-      devShells = forAllSystems ({ pkgs }: {
-        default =
-          let
-            # Use Python 3.11
-            python = pkgs.python311;
-          in
-          pkgs.mkShell {
-            # The Nix packages provided in the environment
-            packages = [
-              # Python plus helper tools
-              (python.withPackages (ps: with ps; [
-                virtualenv # Virtualenv
-                pip # The pip installer
-              ]))
-            ];
-          };
+      packages = forAllSystems (system: let
+        inherit (poetry2nix.lib.mkPoetry2Nix { pkgs = pkgs.${system}; }) mkPoetryApplication;
+      in {
+        default = mkPoetryApplication { projectDir = self; };
+      });
+
+      devShells = forAllSystems (system: let
+        inherit (poetry2nix.lib.mkPoetry2Nix { pkgs = pkgs.${system}; }) mkPoetryEnv;
+      in {
+        default = pkgs.${system}.mkShellNoCC {
+          packages = with pkgs.${system}; [
+            (mkPoetryEnv { projectDir = self; })
+            poetry
+          ];
+        };
       });
     };
 }

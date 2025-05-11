@@ -1,5 +1,9 @@
 import { assertEquals } from "@std/assert";
-import { add } from "./main.ts";
+
+//Add the add function which is tested below
+function add(a: number, b: number): number {
+  return a + b;
+}
 
 // Test for positive numbers
 Deno.test("add positive numbers", () => {
